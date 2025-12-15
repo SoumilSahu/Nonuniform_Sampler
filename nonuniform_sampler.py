@@ -2,6 +2,9 @@ import numpy as np
 from scipy.integrate import quad
 from scipy.interpolate import CubicSpline
 
+'''
+Create sampler class, for a provided normalized distribution "func", within bounds [a,b]. 
+'''
 class sampler:
     def __init__(self,func,a,b):
         self.a = a
@@ -10,17 +13,17 @@ class sampler:
         self.y_arr = np.linspace(a,b,int((b-a)/1e-2)) #Make equally spaced array of y values with gap 1e-3
         int_y_arr = []
         for i in range(len(self.y_arr)):
-            int_y_arr.append(quad(self.func,a,self.y_arr[i])[0])
+            int_y_arr.append(quad(self.func,a,self.y_arr[i])[0]) #evaluate cumulative distribution integral for the y values
         self.int_y_arr = np.array(int_y_arr)
-        self.x_arr = self.int_y_arr*(self.b-self.a) + self.a
-        self.interp = CubicSpline(self.x_arr,self.y_arr)
+        self.x_arr = self.int_y_arr*(self.b-self.a) + self.a #evaluate corresponsing x values
+        self.interp = CubicSpline(self.x_arr,self.y_arr) #interpolate to get y(x)
     
-    def sampling(self,x):
+    def sampling(self,x): #returns interpolated value of y sample for given x sample
         if x > self.b or x < self.a:
             raise ValueError(f'{x} is out of distribution bounds [{self.a},{self.b}]') 
         return self.interp(x)
 
-    def samples(self,_x_vals):
+    def samples(self,_x_vals): #returns set of y samples for a given set of x samples
         x_vals = np.array(_x_vals)
         samp = []
         for i in range(len(x_vals)):
@@ -30,7 +33,7 @@ class sampler:
 '''
 Define function to return number of bins according to Freedman Diagonis formula. arr is the array of samples.
 '''
-
+#This can be used while making histogram of samples.
 def num_bin(arr):
     V = np.array(arr).flatten()
     IQR = np.quantile(V,0.75) - np.quantile(V,0.25)
