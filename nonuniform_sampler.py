@@ -23,8 +23,8 @@ class sampler:
             raise ValueError(f'{x} is out of distribution bounds [{self.a},{self.b}]') 
         return self.interp(x)
 
-    def samples(self,_x_vals): #returns set of y samples for a given set of x samples
-        x_vals = np.array(_x_vals)
+    def samples(self,N): #returns set of N y samples
+        x_vals = np.random.uniform(self.a,self.b,N)
         samp = []
         for i in range(len(x_vals)):
             samp.append(self.sampling(x_vals[i]))
