@@ -1,3 +1,7 @@
+---------------------------
+Soumil Sahu @ 2025
+---------------------------
+
 We wish to map uniform samples $x$ from a uniform distribution $U(x;a,b) = \frac{1}{b-a}$, to the samples $y$ from the desired distribution $f(y;a,b)$. 
 
 $y \in [a,b]$ for $x \in [a,b]$.
