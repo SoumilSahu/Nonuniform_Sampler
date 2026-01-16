@@ -15,7 +15,7 @@ class sampler:
         for i in range(len(self.y_arr)):
             int_y_arr.append(quad(self.func,a,self.y_arr[i])[0]) #evaluate cumulative distribution integral for the y values
         self.int_y_arr = np.array(int_y_arr)
-        self.x_arr = self.int_y_arr*(self.b-self.a) + self.a #evaluate corresponsing x values
+        self.x_arr = self.int_y_arr*(self.b-self.a) + self.a #evaluate corresponding x values
         self.interp = CubicSpline(self.x_arr,self.y_arr) #interpolate to get y(x)
     
     def sampling(self,x): #returns interpolated value of y sample for given x sample
@@ -23,8 +23,11 @@ class sampler:
             raise ValueError(f'{x} is out of distribution bounds [{self.a},{self.b}]') 
         return self.interp(x)
 
-    def samples(self,N): #returns set of N y samples
-        x_vals = np.random.uniform(self.a,self.b,N)
+    def samples(self,N,lin_arr=False): #returns set of N y samples, if lin_arr=True then samples are scaled from a linearly spaced set of samples
+        if lin_arr == True:
+            x_vals = np.linspace(self.a,self.b,N)
+        else:
+            x_vals = np.random.uniform(self.a,self.b,N)
         samp = []
         for i in range(len(x_vals)):
             samp.append(self.sampling(x_vals[i]))
