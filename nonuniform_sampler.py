@@ -3,17 +3,19 @@ from scipy.integrate import quad
 from scipy.interpolate import CubicSpline
 
 '''
-Create sampler class, for a provided normalized distribution "func", within bounds [a,b]. 
+Create sampler class, for a provided distribution "func", within bounds [a,b]. The distribution
+can be un-normalized. 
 '''
 class sampler:
     def __init__(self,func,a,b):
         self.a = a
         self.b = b
-        self.func = func
+        self.norm = quad(func,a,b)[0]
+        self.func_norm = lambda x: func(x)/self.norm #Normalizing the distribution
         self.y_arr = np.linspace(a,b,int((b-a)/1e-2)) #Make equally spaced array of y values with gap 1e-3
         int_y_arr = []
         for i in range(len(self.y_arr)):
-            int_y_arr.append(quad(self.func,a,self.y_arr[i])[0]) #evaluate cumulative distribution integral for the y values
+            int_y_arr.append(quad(self.func_norm,a,self.y_arr[i])[0]) #evaluate cumulative distribution integral for the y values
         self.int_y_arr = np.array(int_y_arr)
         self.x_arr = self.int_y_arr*(self.b-self.a) + self.a #evaluate corresponding x values
         self.interp = CubicSpline(self.x_arr,self.y_arr) #interpolate to get y(x)
