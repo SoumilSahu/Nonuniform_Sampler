@@ -15,7 +15,13 @@ class sampler:
         self.y_arr = np.linspace(a,b,int((b-a)/1e-2)) #Make equally spaced array of y values with gap 1e-3
         int_y_arr = []
         for i in range(len(self.y_arr)):
-            int_y_arr.append(quad(self.func_norm,a,self.y_arr[i])[0]) #evaluate cumulative distribution integral for the y values
+            if i == 0:
+                int_y_arr.append(0)
+            else:
+                low = self.y_arr[i-1]
+                high = self.y_arr[i]
+                add = quad(self.func_norm,low,high)[0]
+                int_y_arr.append(int_y_arr[i-1]+add) #evaluate cumulative distribution integral for the y values
         self.int_y_arr = np.array(int_y_arr)
         self.x_arr = self.int_y_arr*(self.b-self.a) + self.a #evaluate corresponding x values
         self.interp = CubicSpline(self.x_arr,self.y_arr) #interpolate to get y(x)
